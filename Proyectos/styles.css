@@ -1,0 +1,30 @@
+body,html{
+    height:100%;
+    margin:0;
+    display: flex;
+    justify-content: center; /* Horizontally center */
+    align-items: center;  
+}
+
+#nombre{
+  /*
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    margin:-25px 0 0 -400px; 
+    border-radius: 10px;*/ 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid;
+   
+    
+}
+
+#texto{
+    color: green;
+    text-align: left;
+    padding:10px;
+    align-items: center;
+    font-size: 34px;
+}
