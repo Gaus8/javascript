@@ -1,45 +1,43 @@
 # 🧩 Diagrama de Infraestructura — SkillStream (Fase 3: Operacionalización y Resiliencia)
 
-Este diagrama muestra cómo se despliega la arquitectura de microservicios en Kubernetes, con observabilidad y resiliencia.
-
 ```mermaid
 flowchart LR
-  subgraph Cluster[Kubernetes Cluster]
+  subgraph Cluster["Kubernetes Cluster"]
     direction TB
-    ING[Ingress / API Gateway]
-    SM[Service Mesh (Istio/Linkerd)]
-    subgraph NS_API[Namespaces]
+    ING["Ingress / API Gateway"]
+    SM["Service Mesh: Istio o Linkerd"]
+    subgraph NS_API["Namespaces"]
       direction LR
-      APISvc[API Gateway (Node/Go)]
-      Users[Usuarios Service\n(Docker)]
-      Subs[Subscripciones Service\n(Docker)]
-      Payments[Pagos Service\n(Docker)]
-      Catalog[Catálogo Service\n(Docker)]
-      Media[Media Service\n(Docker + Blob Mount)]
-      Reco[Recomendaciones Service\n(Docker)]
+      APISvc["API Gateway (Node o Go)"]
+      Users["Usuarios Service (Docker)"]
+      Subs["Subscripciones Service (Docker)"]
+      Payments["Pagos Service (Docker)"]
+      Catalog["Catálogo Service (Docker)"]
+      Media["Media Service (Docker + Blob Mount)"]
+      Reco["Recomendaciones Service (Docker)"]
     end
-    DB_USR[(Postgres - usuarios)]
-    DB_SUB[(Postgres - subscripciones)]
-    DB_PAY[(Postgres - pagos + ledger)]
-    ObjectStore[(S3 / MinIO)]
-    CDN[CDN]
-    Cache[(Redis)]
-    MQ[(Kafka / RabbitMQ)]
-    Prom[Prometheus]
-    Graf[Grafana]
-    Jaeger[Jaeger / OpenTelemetry]
-    ELK[ElasticSearch + Kibana + Filebeat]
-    OCI[CI/CD: GitHub Actions → ArgoCD / Flux]
+    DB_USR["Postgres (usuarios)"]
+    DB_SUB["Postgres (subscripciones)"]
+    DB_PAY["Postgres (pagos + ledger)"]
+    ObjectStore["S3 o MinIO"]
+    CDN["CDN"]
+    Cache["Redis"]
+    MQ["Kafka o RabbitMQ"]
+    Prom["Prometheus"]
+    Graf["Grafana"]
+    Jaeger["Jaeger / OpenTelemetry"]
+    ELK["ElasticSearch + Kibana + Filebeat"]
+    OCI["CI/CD: GitHub Actions → ArgoCD o Flux"]
   end
 
   ING --> APISvc
   APISvc --> SM
-  SM -->|HTTP/gRPC| Users
-  SM -->|HTTP/gRPC| Subs
-  SM -->|HTTP/gRPC| Payments
-  SM -->|HTTP/gRPC| Catalog
-  SM -->|HTTP/gRPC| Media
-  SM -->|HTTP/gRPC| Reco
+  SM -->|HTTP o gRPC| Users
+  SM -->|HTTP o gRPC| Subs
+  SM -->|HTTP o gRPC| Payments
+  SM -->|HTTP o gRPC| Catalog
+  SM -->|HTTP o gRPC| Media
+  SM -->|HTTP o gRPC| Reco
 
   Users --> DB_USR
   Subs --> DB_SUB
@@ -58,7 +56,7 @@ flowchart LR
   SM ---|metrics| Prom
   SM ---|logs| ELK
   Prom --> Graf
-  AllLogs["Pod logs \n(filebeat) "] --> ELK
+  AllLogs["Pod logs (Filebeat)"] --> ELK
 
   OCI --> APISvc
   OCI --> Users
@@ -67,10 +65,9 @@ flowchart LR
   OCI --> Catalog
   OCI --> Media
   OCI --> Reco
-  Payments -. CircuitBreaker .-> Subs
-  classDef cb fill:#ffefc6,stroke:#b58200
-  class Payments,Subs cb
-  subgraph Observability[Observability & Ops]
+  Payments -. "Circuit Breaker" .-> Subs
+
+  subgraph Observability["Observability & Ops"]
     direction LR
     Jaeger
     Prom
